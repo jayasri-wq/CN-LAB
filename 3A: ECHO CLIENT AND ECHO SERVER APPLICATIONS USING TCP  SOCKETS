@@ -1,0 +1,60 @@
+client.java
+import java.io.*;
+import java.net.*;
+import java.util.Scanner;
+
+public class client {
+    public static void main(String[] args) {
+        try {
+            Socket s = new Socket("localhost", 6666);
+
+            DataInputStream din = new DataInputStream(s.getInputStream());
+            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            Scanner input = new Scanner(System.in);
+
+            String send = "", reply = "";
+            while (!send.equals("stop")) {
+                System.out.print("TO SERVER :");
+                send = input.nextLine();
+                dout.writeUTF(send);
+                reply = din.readUTF();
+                System.out.println("SERVER SAYS :" + reply);
+            }
+
+            din.close();
+            dout.close();
+            s.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+server.java
+import java.io.*;
+import java.net.*;
+
+public class server {
+    public static void main(String[] args) {
+        try {
+            ServerSocket ss = new ServerSocket(6666);
+            Socket s = ss.accept();
+
+            DataInputStream din = new DataInputStream(s.getInputStream());
+            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+
+            String received = "";
+            while (!received.equals("stop")) {
+                received = din.readUTF();
+                System.out.println("CLIENT SAYS :" + received);
+                dout.writeUTF(received);
+            }
+
+            din.close();
+            dout.close();
+            s.close();
+            ss.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
