@@ -1,3 +1,33 @@
+server.java
+import java.io.*;
+import java.net.*;
+
+public class server {
+    public static void main(String[] args) {
+        try {
+            ServerSocket ss = new ServerSocket(6666);
+            Socket s = ss.accept();
+
+            DataInputStream din = new DataInputStream(s.getInputStream());
+            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+
+            String received = "";
+            while (!received.equals("stop")) {
+                received = din.readUTF();
+                System.out.println("CLIENT SAYS :" + received);
+                dout.writeUTF(received);
+            }
+
+            din.close();
+            dout.close();
+            s.close();
+            ss.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
 client.java
 import java.io.*;
 import java.net.*;
@@ -24,35 +54,6 @@ public class client {
             din.close();
             dout.close();
             s.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-}
-server.java
-import java.io.*;
-import java.net.*;
-
-public class server {
-    public static void main(String[] args) {
-        try {
-            ServerSocket ss = new ServerSocket(6666);
-            Socket s = ss.accept();
-
-            DataInputStream din = new DataInputStream(s.getInputStream());
-            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-
-            String received = "";
-            while (!received.equals("stop")) {
-                received = din.readUTF();
-                System.out.println("CLIENT SAYS :" + received);
-                dout.writeUTF(received);
-            }
-
-            din.close();
-            dout.close();
-            s.close();
-            ss.close();
         } catch (Exception e) {
             System.out.println(e);
         }
